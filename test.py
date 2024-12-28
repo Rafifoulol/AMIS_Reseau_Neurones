@@ -20,8 +20,8 @@ print(len(train_data))
 print(len(test_data))
 
 # Je prend un échantillon (100 et 50 est un hasard je peux prendre plus loin)
-train_sample, train_label = train_data[2003]
-test_sample, test_label = test_data[18] 
+train_sample, train_label = train_data[100]
+test_sample, test_label = test_data[50] 
 
 # Je vérifie les données de mon échantillon
 print(f"Sample shape: {train_sample.shape}")
@@ -45,4 +45,16 @@ plt.title(f"Test: {test_data.classes[test_label]} (Label: {test_label})")
 plt.axis("off")
 
 plt.tight_layout()
+plt.show()
+
+
+# Avec ces lignes on peut changer les couleurs (ici les gris)
+sample = train_data[47][0]
+target = train_data[47][1]
+
+grayscale_sample = sample[0]  # Select the first channel (red)
+print(grayscale_sample.shape)  # torch.Size([256, 256])
+
+plt.imshow(grayscale_sample, cmap="Greys")
+plt.axis("off")
 plt.show()

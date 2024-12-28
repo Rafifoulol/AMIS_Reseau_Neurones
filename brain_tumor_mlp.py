@@ -41,6 +41,31 @@ class MLP(object):
             
         return X
     
+    
+
+
+def process_data(dataloader, network):
+    """
+    Pass a dataloder into a network.
+    Return targets and predictions.
+    """
+
+    all_targets = []
+    all_predictions = []
+
+    for b in dataloader:
+
+        # samples and targets
+        samples = reshape_batch(b[0])
+        targets = b[1]
+        all_targets.extend(targets)
+
+        # forward pass
+        outputs = network.forward(samples)
+        predictions = torch.argmax(outputs, dim=0)
+        all_predictions.extend(predictions)
+    
+    return all_targets, all_predictions
 
 num_epochs = 20
 batchsize = 100
@@ -54,11 +79,51 @@ TEST_DATA_PATH = "/home/rafifou/.cache/kagglehub/datasets/thomasdubail/brain-tum
 
 
 train_data = torchvision.datasets.ImageFolder(root=TRAIN_DATA_PATH, transform=ToTensor())
-#train_data_loader = data.DataLoader(train_data, batch_size=BATCH_SIZE, shuffle=True,  num_workers=4)
 test_data = torchvision.datasets.ImageFolder(root=TEST_DATA_PATH, transform=ToTensor())
-#test_data_loader  = data.DataLoader(test_data, batch_size=BATCH_SIZE, shuffle=True, num_workers=4)
 
 print(len(train_data))
 print(len(test_data))
+
+
+def reshape_batch(b) :
+    # Step 1: Remove the channel dimension (use only one channel, e.g., the first channel)
+    b = b[:, 1, :, :]
+    b = torch.squeeze(b)
+    b = torch.flatten(b, 1, 2)
+    b = b.transpose(0, 1)
+
+    return b
+
+# La je récupére la 47eme photo de mes Data. Je sépare l'image et le Label
+sample = train_data[47][0]
+target = train_data[47][1]
+
+# Je ne prend qu'une des couleurs car mon sample.torch.Size(3, 256, 256)
+# Donc je ne veux qu'une des trois couleur pour etre de la forme (1, 256, 256)
+# Je le shape en 256x256 pour l'afficher sur matplot
+sample_shaped = sample[0]
+sample_shaped = sample_shaped.view(256,256)
+#plt.imshow(sample_shaped)
+#plt.show()
+
+# Maintenant je le flatten
+sample_1d = sample_shaped.flatten()
+#print(sample_1d.shape) # Taille 65536
+
+train_data_loader = torch.utils.data.DataLoader(train_data, batch_size=BATCH_SIZE, shuffle=True)
+test_data_loader  = torch.utils.data.DataLoader(test_data, batch_size=BATCH_SIZE, shuffle=True)
+
+for b in train_data_loader :
+    break
+#print(b[0].shape, b[1].shape) # torch.Size([100, 3, 256, 256]) torch.Size([100])
+
+b_reshaped = reshape_batch(b[0])
+#print(b_reshaped.shape)
+
+mlp = MLP ([65536, 4096, 128, 4])
+
+all_targets, all_predictions = process_data(train_data_loader, mlp)
+print("Train results\n")
+print(classification_report(all_targets, all_predictions))
 
 
