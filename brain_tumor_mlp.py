@@ -40,9 +40,15 @@ class MLP(object):
             X = torch.tanh(torch.mm(W, X) + b)
             
         return X
-    
-    
+      
+def reshape_batch(b) :
+    # Step 1: Remove the channel dimension (use only one channel, e.g., the first channel)
+    b = b[:, 1, :, :]
+    b = torch.squeeze(b)
+    b = torch.flatten(b, 1, 2)
+    b = b.transpose(0, 1)
 
+    return b
 
 def process_data(dataloader, network):
     """
@@ -67,32 +73,15 @@ def process_data(dataloader, network):
     
     return all_targets, all_predictions
 
-num_epochs = 20
-batchsize = 100
-lr = 0.001
-
-EPOCHS = 2
 BATCH_SIZE = 100
-LEARNING_RATE = 0.003
 TRAIN_DATA_PATH = "/home/rafifou/.cache/kagglehub/datasets/thomasdubail/brain-tumors-256x256/versions/1/Data"
 TEST_DATA_PATH = "/home/rafifou/.cache/kagglehub/datasets/thomasdubail/brain-tumors-256x256/versions/1/DataTest"
-
 
 train_data = torchvision.datasets.ImageFolder(root=TRAIN_DATA_PATH, transform=ToTensor())
 test_data = torchvision.datasets.ImageFolder(root=TEST_DATA_PATH, transform=ToTensor())
 
 print(len(train_data))
 print(len(test_data))
-
-
-def reshape_batch(b) :
-    # Step 1: Remove the channel dimension (use only one channel, e.g., the first channel)
-    b = b[:, 1, :, :]
-    b = torch.squeeze(b)
-    b = torch.flatten(b, 1, 2)
-    b = b.transpose(0, 1)
-
-    return b
 
 # La je récupére la 47eme photo de mes Data. Je sépare l'image et le Label
 sample = train_data[47][0]
