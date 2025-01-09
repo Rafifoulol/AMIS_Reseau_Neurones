@@ -65,34 +65,38 @@ class MLP(nn.Module) :
     return x
 ```
 
-### Entrainement
+### Entraînement
 
 Pour entraîner ce modèle, nous avons suivi les étapes suivantes :
 
-1. Prétraitement des données :
-    - Redimensionnement des images à 128x128 pixels.
-    - Conversion des images en niveaux de gris (un seul canal).
-    - Mise à plat des images en vecteurs de taille 16384.
-    - Normalisation des valeurs des pixels dans l’intervalle [0,1].
+1. **Prétraitement des données :**
+   - Redimensionnement des images à 128x128 pixels.
+   - Conversion des images en niveaux de gris (un seul canal).
+   - Mise à plat des images en vecteurs de taille 16384.
+   - Normalisation des valeurs des pixels dans l’intervalle [0,1].
 
-2. Configuration de l’entraînement :
-    - Optimiseur : Adam, avec un taux d’apprentissage initial fixé à 0.001.
-    - Fonction de perte : Cross-Entropy Loss, adaptée à la classification en 4 catégories.
-    - Taille des batchs : 129 images par batch (car 129x24 = 3096 notre nombre d'images).
-    - Nombre d’époques : 5, 10, 15 (pour comparer).
+2. **Configuration de l’entraînement :**
+   - Optimiseur : Adam, avec un taux d’apprentissage initial fixé à 0.001.
+   - Fonction de perte : Cross-Entropy Loss, adaptée à la classification en 4 catégories.
+   - Taille des batchs : 129 images par batch (car 129x24 = 3096 notre nombre d'images).
+   - Nombre d’époques : 5, 10, 15 (pour comparer).
 
-3. to do
-    - to do
+3. **A faire :**
+   - A compléter
+   - Ajouter les graphes
 
-### Forces et Faiblesses
+### Forces et Faiblesses
 
-Forces : 
-- to do
+**Forces :**
+- Le modèle est léger et rapide à entraîner.
+- Prétraitement des données optimisé pour la mémoire.
 
-Faiblesses :
-- to do
+**Faiblesses :**
+- Performance limitée à cause de l’architecture MLP.
+- Le modèle ne prend pas en compte les relations spatiales entre les pixels.
 
-### Améliorations possibles
+
+### Améliorations possibles
 
 Pour améliorer ce modèle, plusieurs pistes sont envisageables :
 
