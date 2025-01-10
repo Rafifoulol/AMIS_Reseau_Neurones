@@ -25,9 +25,13 @@ Dans le projet nous avonc donc implémenté :
 
 ### Dataset
 
-Pour le MLP étant un réseau de neurones prenant en entrée, la taille des données qui l'entrainerons, il fallait un dataset un peu plus particulier que le dataset choisit. Nous avons remarqué que le dataset possèdait un sous [dataset](https://www.kaggle.com/datasets/thomasdubail/brain-tumors-256x256) contenant 3096 images d'IRM, de tailles 256x256. Nous avons adapté le dataset afin de réduire encore la taille des images et simplifier l’entraînement. Toutes les images ont été redimensionnées à 128x128 pixels, et bien qu’elles possèdent initialement 3 canaux de couleurs (rouge, vert, bleu), nous avons conservé uniquement les niveaux de gris. Cela permet de réduire la taille des données en entrée, tout en préservant l’essentiel des informations nécessaires pour l’analyse des images.
+Pour le MLP, étant un réseau de neurones prenant en entrée la taille des données utilisé, il fallait un dataset un peu plus simple que le dataset choisit. Nous avons remarqué que le dataset possèdait un sous [dataset](https://www.kaggle.com/datasets/thomasdubail/brain-tumors-256x256) contenant 3096 images d'IRM, de tailles 256x256. Nous avons adapté le dataset afin de réduire encore la taille des images et simplifier l’entraînement. Toutes les images ont été redimensionnées à 128x128 pixels, et bien qu’elles possèdent initialement 3 canaux de couleurs (rouge, vert, bleu), nous avons conservé uniquement les niveaux de gris. Cela permet de réduire la taille des données en entrée, tout en préservant l’essentiel des informations nécessaires pour l’analyse des images. 
 
 Ainsi, chaque image redimensionnée est convertie en un vecteur plat de taille 128×128=16384 (au lieu de 3x256x256=131072), correspondant à la taille de la couche d’entrée du réseau.
+
+Les images ont ensuite été réparties de la façon suivante : 
+- 70% des images pour le training
+- 30% des images pour le testing
 
 Le dataset contient des images réparties en quatre catégories :
 - **Glioma**
@@ -78,12 +82,11 @@ Pour entraîner ce modèle, nous avons suivi les étapes suivantes :
 2. **Configuration de l’entraînement :**
    - Optimiseur : Adam, avec un taux d’apprentissage initial fixé à 0.001.
    - Fonction de perte : Cross-Entropy Loss, adaptée à la classification en 4 catégories.
-   - Taille des batchs : 129 images par batch (car 129x24 = 3096 notre nombre d'images).
+   - Taille des batchs : 197 images par batch (car 197x11 = 2167 notre nombre d'images) pour le training et 32 images par batch pour le testing.
    - Nombre d’époques : 5, 10, 15 (pour comparer).
 
-3. **A faire :**
-   - A compléter
-   - Ajouter les graphes
+3. **Résultat :**
+```Epoch [10/10], Accuracy: 59.13%```
 
 ### Forces et Faiblesses
 
