@@ -7,7 +7,7 @@ Image prise de : https://fr.wikipedia.org/wiki/Universit%C3%A9_de_Versailles_%E2
 
 ## Présentation du projet
 
-Ce projet a pour objectif d'implémenter et d'entraîner un réseau de neurones à l’aide des frameworks PyTorch ou Keras, afin de résoudre un problème spécifique. Dans notre cas, nous avons choisi d'entrainer un réseau de neurones sur des images d'IRM et de CT-scan du cerveau. L’objectif est d’entraîner un réseau de neurones capable, à partir d'une image, de déterminer si elle provient d’un patient atteint d’un cancer ou non. 
+Ce projet a pour objectif d'implémenter et d'entraîner un réseau de neurones à l’aide des frameworks PyTorch ou Keras, afin de résoudre un problème spécifique. Dans notre cas, nous avons choisi d'entrainer un réseau de neurones sur des images d'IRM et de CT-scan du cerveau. L’objectif est d’entraîner un réseau de neurones capable, à partir d'une image, de déterminer si elle provient d’un patient possédant une tumeur ou non. 
 
 Pour commencer, nous avons recherché un dataset adapté. Celui que nous avons utilisé provient de [Kaggle](https://www.kaggle.com/datasets/murtozalikhon/brain-tumor-multimodal-image-ct-and-mri). Ce dataset contient 9620 images de taille différentes. 
 
@@ -114,9 +114,10 @@ Pour améliorer ce modèle, plusieurs pistes sont envisageables :
 
 ### Dataset
 
-Pour le CNN, on a voulu utiliser le dataset en entier. Comme dit précédemment, le dataset possède des images de tailles variées et pas forcément carré, chacune est caractérisé par la présence ou non d'une tumeur.
+Pour le CNN, on a voulu utiliser le dataset en entier. Comme dit précédemment, le dataset possède des images de tailles variées et pas forcément carré, chacune est caractérisé par la présence ou non d'une tumeur (classification en "*Tumor*" et "*Healthy*").
 Dans un réseau convolutif, on a besoin d'avoir des entrées de taille fixe. On commence donc à redimensionner les images en (128 x 128) pixels. On a choisi cette taille car elle permet de garder assez d'informations pour la détection, tout en limitant le nombre de paramètre du modèle.
 On garde les 3 canaux rgb, car l'impacte sur le nombre de paramètre du modèle est moindre (contrairement au MLP) et après avoir entraînement, la précision du modèle est légèrement meilleure en gardant les images en couleurs.
+Pour l'entraînement, on a divisé les images en dataset d'entraînement (training) et de validation (validation) avec une séparation de 70% / 30%. Nous avons mélangé les images avant de les mettre en batch afin de limiter l'overfitting (plus particulièrement pour le modèle commun IRM et CT Scan).
 
 
 ### Modèle
@@ -184,16 +185,23 @@ Pour entraîner ce modèle, nous avons suivi les étapes suivantes:
 3. **Entrainement des modèles**
    - Comme on a décidé de diviser le datasets en 3, on va entraîner 3 modèles pour voir si un type d'imagerie est mieux que l'autre pour la reconnaissance de tumeur et si ces 2 types peuvent être évaluer par le même modèle (en utilisant la même forme de modèle mais pour obtenir des paramètres différents).
 
+Les courbes de coût (loss) et de précision (accuracy) pour les trois modèles (CT, IRM et Commun) entraînés sur 10 époques.
+
+| Training graphs for CT Scan model      | Training graphs for MRI model            | Training graphs for commun model               |
+|----------------------------------------|------------------------------------------|------------------------------------------------|
+| ![Accuracy CT](Images/ct_accuracy.png) | ![Accuracy MRI](Images/mri_accuracy.png) | ![Accuracy Commun](Images/commun_accuracy.png) |
+| ![Loss CT](Images/ct_loss.png)         | ![Loss MRI](Images/mri_loss.png)         | ![Loss Commun](Images/commun_loss.png)         |
+
 
 ### Résultats obtenus
 
 Après l'entraînement sur 10 époques, on voit que nos modèles (avec la même architecture) possède une précision très proche et élevé, avec le modèle des IRMs légèrement plus performant que les 2 autres.
 
-| Modèle       | Dataset utilisé      | Loss   | Accuracy |
-|--------------|----------------------|--------|----------|
-| Modèle CT    | Images de scanner CT | 0.0938 | 96.5%    |
-| Modèle MRI   | Images d'IRM         | 0.0516 | 98.4%    |
-| Modèle Commun| Images de CT + MRI   | 0.1064 | 96.7%    |
+| Modèle        | Dataset utilisé      | Loss   | Accuracy |
+|---------------|----------------------|--------|----------|
+| Modèle CT     | Images de scanner CT | 0.0946 | 96.2%    |
+| Modèle MRI    | Images d'IRM         | 0.0591 | 98.3%    |
+| Modèle Commun | Images de CT + IRM   | 0.1218 | 96.9%    |
 
 
 ### Forces et Faiblesses
@@ -216,7 +224,7 @@ On pourrait utiliser des méthodes pour améliorer le modèle CNN actuel, par ex
 - **L'optimisation des hyperparamètres** pourrait être une option, bien qu'on ai essayé plusieurs types de couches et taille de filtres, il existe certainement un modèle légèrement plus performant.
 
 - On pourrait utiliser d'autres approches, par exemple en **changeant l'architecture** du modèle en passant d'une structure de CNN vers un transformers.
-- Une autre amélioration qui n'est cette fois-ci pas en lien avec la précision, serait de donner la zone dans laquelle la tumeur se trouve (si elle existe), ca permetterait au modèle d'être utilisé par des humains.
+- Une autre amélioration qui n'est cette fois-ci pas en lien avec la précision, serait de donner la zone dans laquelle la tumeur se trouve (si elle existe), ca pourrait être une zone rectangulaire ou bien une heatmap avec des couleurs plus vive au centre de la tumeur, ca permetterait au modèle d'être utilisé par des humains, notamment pour aider à faire des diagnostics.
 
 
 ### Conclusion
