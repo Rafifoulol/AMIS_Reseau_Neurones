@@ -1,25 +1,30 @@
-# Projet MASTER 2 AMIS : Reseau de neurone
+# Projet Master 2 AMIS : Réseau de neurones
 
 ### GUERIN Raphael et FERNANDEZ Sebastien
 
 ![](/Images/UVSQ_Logo.png)
 Image prise de : https://fr.wikipedia.org/wiki/Universit%C3%A9_de_Versailles_%E2%80%93_Saint-Quentin-en-Yvelines
 
+
 ## Présentation du projet
 
-Ce projet a pour objectif d'implémenter et d'entraîner un réseau de neurones à l’aide des frameworks PyTorch ou Keras, afin de résoudre un problème spécifique. Dans notre cas, nous avons choisi d'entrainer un réseau de neurones sur des images d'IRM et de CT-scan du cerveau. L’objectif est d’entraîner un réseau de neurones capable, à partir d'une image, de déterminer si elle provient d’un patient possédant une tumeur ou non. 
+Ce projet a pour objectif d'implémenter et d'entraîner un réseau de neurones à l’aide des frameworks PyTorch ou Keras, afin de résoudre un problème spécifique. Dans notre cas, nous avons choisi d'entraîner un réseau de neurones sur des images d'IRM et de CT-scan du cerveau. L’objectif est d’entraîner un réseau de neurones capable, à partir d'une image, de déterminer si elle provient d’un patient possédant une tumeur ou non. 
 
 Pour commencer, nous avons recherché un dataset adapté. Celui que nous avons utilisé provient de [Kaggle](https://www.kaggle.com/datasets/murtozalikhon/brain-tumor-multimodal-image-ct-and-mri). Ce dataset contient 9620 images de taille différentes. 
 
 ![Images d'un Cerveau Sain](Images/N_3.jpg)
 
+
+
 ## Problématique
 
-Est-il possible d'entrainer suffissament un réseau de neurones pour qu’il fournisse un diagnostic avec un taux de réussite proche de 100 % ? Et, quel type de réseau de neurones est le plus performant pour cette tâche ?
+Est-il possible d'entraîner suffisamment un réseau de neurones pour qu’il fournisse un diagnostic avec un taux de réussite proche de 100 % ? Et, quel type de réseau de neurones est le plus performant pour cette tâche ?
 
-Dans le projet nous avonc donc implémenté : 
+Dans le projet nous avons donc implémenté : 
 - Un **MLP (Multilayer perceptron)** à 4 couches
 - Un **CNN (Convolutional neural network)**
+
+
 
 ## MLP
 
@@ -69,6 +74,7 @@ class MLP(nn.Module) :
     return x
 ```
 
+
 ### Entraînement
 
 Pour entraîner ce modèle, nous avons suivi les étapes suivantes :
@@ -88,6 +94,7 @@ Pour entraîner ce modèle, nous avons suivi les étapes suivantes :
 3. **Résultat :**
 ```Epoch [10/10], Accuracy: 59.13%```
 
+
 ### Forces et Faiblesses
 
 **Forces :**
@@ -103,6 +110,7 @@ Pour entraîner ce modèle, nous avons suivi les étapes suivantes :
 
 Pour améliorer ce modèle, plusieurs pistes sont envisageables :
 
+- Entraînement sur un nombre d'époques plus élevé : Prolonger la durée de l’entraînement pourrait permettre au modèle de converger davantage et potentiellement d'améliorer sa précision.
 - Augmentation des données : Appliquer des transformations comme des rotations, des zooms ou des inversions pourrait enrichir le dataset et améliorer la généralisation.
 - Réduction encore plus marquée de la dimensionnalité : Explorer des approches comme les autoencodeurs pour compresser les images avant leur entrée dans le MLP.
 - Exploration de la topologie des couches : Ajouter ou supprimer des couches cachées ou expérimenter avec un nombre différent de neurones.
@@ -116,7 +124,7 @@ Pour améliorer ce modèle, plusieurs pistes sont envisageables :
 
 Pour le CNN, on a voulu utiliser le dataset en entier. Comme dit précédemment, le dataset possède des images de tailles variées et pas forcément carré, chacune est caractérisé par la présence ou non d'une tumeur (classification en "*Tumor*" et "*Healthy*").
 Dans un réseau convolutif, on a besoin d'avoir des entrées de taille fixe. On commence donc à redimensionner les images en (128 x 128) pixels. On a choisi cette taille car elle permet de garder assez d'informations pour la détection, tout en limitant le nombre de paramètre du modèle.
-On garde les 3 canaux rgb, car l'impacte sur le nombre de paramètre du modèle est moindre (contrairement au MLP) et après avoir entraînement, la précision du modèle est légèrement meilleure en gardant les images en couleurs.
+On garde les 3 canaux rgb, car l'impact sur le nombre de paramètre du modèle est moindre (contrairement au MLP) et après avoir entraînement, la précision du modèle est légèrement meilleure en gardant les images en couleurs.
 Pour l'entraînement, on a divisé les images en dataset d'entraînement (training) et de validation (validation) avec une séparation de 70% / 30%. Nous avons mélangé les images avant de les mettre en batch afin de limiter l'overfitting (plus particulièrement pour le modèle commun IRM et CT Scan).
 
 
@@ -180,9 +188,9 @@ Pour entraîner ce modèle, nous avons suivi les étapes suivantes:
    - Fonction de coût : Cross-Entropy Loss, adaptée à la classification en catégories (Healthy et Tumor).
    - Taille des batchs : 64 images par batch.
    - Nombre d’époques : 10.
-   - Sauvegarde de la meilleure configuration (par rapport à la validation loss) du modèle pendant l'entrainement et chargement à la fin des 10 époques (utile en cas d'overfitting).
+   - Sauvegarde de la meilleure configuration (par rapport à la validation loss) du modèle pendant l'entraînement et chargement à la fin des 10 époques (utile en cas d'overfitting).
 
-3. **Entrainement des modèles**
+3. **Entraînement des modèles**
    - Comme on a décidé de diviser le datasets en 3, on va entraîner 3 modèles pour voir si un type d'imagerie est mieux que l'autre pour la reconnaissance de tumeur et si ces 2 types peuvent être évaluer par le même modèle (en utilisant la même forme de modèle mais pour obtenir des paramètres différents).
 
 Les courbes de coût (loss) et de précision (accuracy) pour les trois modèles (CT, IRM et Commun) entraînés sur 10 époques.
@@ -197,11 +205,11 @@ Les courbes de coût (loss) et de précision (accuracy) pour les trois modèles 
 
 Après l'entraînement sur 10 époques, on voit que nos modèles (avec la même architecture) possède une précision très proche et élevé, avec le modèle des IRMs légèrement plus performant que les 2 autres.
 
-| Modèle        | Dataset utilisé      | Loss   | Accuracy |
-|---------------|----------------------|--------|----------|
-| Modèle CT     | Images de scanner CT | 0.0946 | 96.2%    |
-| Modèle MRI    | Images d'IRM         | 0.0591 | 98.3%    |
-| Modèle Commun | Images de CT + IRM   | 0.1218 | 96.9%    |
+| Modèle        | Dataset de validation utilisé | Loss   | Accuracy |
+|---------------|-------------------------------|--------|----------|
+| Modèle CT     | Images de scanner CT          | 0.0946 | 96.2%    |
+| Modèle MRI    | Images d'IRM                  | 0.0591 | 98.3%    |
+| Modèle Commun | Images de CT + IRM            | 0.1218 | 96.9%    |
 
 
 ### Forces et Faiblesses
@@ -222,18 +230,19 @@ Après l'entraînement sur 10 époques, on voit que nos modèles (avec la même 
 On pourrait utiliser des méthodes pour améliorer le modèle CNN actuel, par exemple:
 - Comme pour le MLP, **l'augmentation de données**, que ce soit par l'augmentation du nombre d'images ou par le biais de transformation sur les données existantes, serait possible et permetterait d'améliorer la robustesse et de limiter l'effet d'overfitting.
 - **L'optimisation des hyperparamètres** pourrait être une option, bien qu'on ai essayé plusieurs types de couches et taille de filtres, il existe certainement un modèle légèrement plus performant.
+- Entraînement sur un **nombre d'époques plus élevé** : Prolonger la durée de l’entraînement pourrait permettre au modèle de converger davantage et potentiellement d'améliorer sa précision.
 
 - On pourrait utiliser d'autres approches, par exemple en **changeant l'architecture** du modèle en passant d'une structure de CNN vers un transformers.
 - Une autre amélioration qui n'est cette fois-ci pas en lien avec la précision, serait de donner la zone dans laquelle la tumeur se trouve (si elle existe), ca pourrait être une zone rectangulaire ou bien une heatmap avec des couleurs plus vive au centre de la tumeur, ca permetterait au modèle d'être utilisé par des humains, notamment pour aider à faire des diagnostics.
 
 
-### Conclusion
+
+## Conclusion
 
 Dans le cadre de ce projet, l’objectif était de déterminer si un réseau de neurones pouvait atteindre un taux de réussite proche de 100 % pour un diagnostic, et de comparer la performance de deux types de réseaux de neurones : un MLP (Multilayer Perceptron) et un CNN (Convolutional Neural Network).
 
-**Pour le MLP**, malgré la mise en place d'un réseau avec 4 couches, le modèle n’a atteint qu'une précision de 59,13% après 10 epoch d’entraînement. Cette précision relativement faible peut s’expliquer par la nature du MLP qui, bien qu’efficace pour certaines tâches, n’est pas particulièrement adapté aux données d’image complexes, comme celles utilisées dans ce projet. 
+**Pour le MLP**, malgré la mise en place d'un réseau avec 4 couches, le modèle n’a atteint qu'une précision de 59,13% après 10 époques d’entraînement. Cette précision relativement faible peut s’expliquer par la nature du MLP qui, bien qu’efficace pour certaines tâches, n’est pas particulièrement adapté aux données d’image complexes, comme celles utilisées dans ce projet. 
 
-**Pour le CNN**, qui est spécifiquement conçu pour les tâches de traitement d'images, les résultats parle d'eux mêmes. En utilisant des images de scanner CT, on a atteint une précision de 96,5%. Lors de l’utilisation d'images d’IRM, la précision a augmenté à 98,4%. Enfin, en combinant les images de CT et IRM on a une précision de 96,7%.
+**Pour le CNN**, qui est spécifiquement conçu pour les tâches de traitement d'images, les résultats parle d'eux mêmes. En utilisant des images de scanner CT, on a atteint une précision de 96,2%. Lors de l’utilisation d'images d’IRM, la précision a augmenté à 98,3%. Enfin, en combinant les images de CT et IRM on a une précision de 96,9%.
 
-En conclusion, il est effectivement possible d’obtenir un modèle avec un taux de précision élevé, notamment proche de 100 %, en utilisant des architectures adaptées comme les CNN. Le MLP, en revanche, n’a pas donné des résultats suffisamment bons dans ce contexte, ce qui montre qu’il n’est pas toujours le meilleur choix pour des tâches de classification sur des données d’images complexes.
-
+En conclusion, il est effectivement possible d’obtenir un modèle avec un taux de précision élevé, proche de 100%, en utilisant des architectures adaptées comme les CNN. Le MLP, en revanche, n’a pas donné des résultats suffisamment bons dans ce contexte, ce qui montre qu’il n’est pas toujours le meilleur choix pour des tâches de classification sur des données d’images complexes.
