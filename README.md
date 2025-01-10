@@ -221,7 +221,11 @@ On pourrait utiliser des méthodes pour améliorer le modèle CNN actuel, par ex
 
 ### Conclusion
 
+Dans le cadre de ce projet, l’objectif était de déterminer si un réseau de neurones pouvait atteindre un taux de réussite proche de 100 % pour un diagnostic, et de comparer la performance de deux types de réseaux de neurones : un MLP (Multilayer Perceptron) et un CNN (Convolutional Neural Network).
 
+**Pour le MLP**, malgré la mise en place d'un réseau avec 4 couches, le modèle n’a atteint qu'une précision de 59,13% après 10 epoch d’entraînement. Cette précision relativement faible peut s’expliquer par la nature du MLP qui, bien qu’efficace pour certaines tâches, n’est pas particulièrement adapté aux données d’image complexes, comme celles utilisées dans ce projet. 
 
+**Pour le CNN**, qui est spécifiquement conçu pour les tâches de traitement d'images, les résultats parle d'eux mêmes. En utilisant des images de scanner CT, on a atteint une précision de 96,5%. Lors de l’utilisation d'images d’IRM, la précision a augmenté à 98,4%. Enfin, en combinant les images de CT et IRM on a une précision de 96,7%.
 
+En conclusion, il est effectivement possible d’obtenir un modèle avec un taux de précision élevé, notamment proche de 100 %, en utilisant des architectures adaptées comme les CNN. Le MLP, en revanche, n’a pas donné des résultats suffisamment bons dans ce contexte, ce qui montre qu’il n’est pas toujours le meilleur choix pour des tâches de classification sur des données d’images complexes.
 
