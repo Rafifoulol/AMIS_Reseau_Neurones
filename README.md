@@ -30,7 +30,7 @@ Dans le projet nous avons donc implémenté :
 
 ### Dataset
 
-Pour le MLP, étant un réseau de neurones prenant en entrée la taille des données utilisé, il fallait un dataset un peu plus simple que le dataset choisit. Nous avons remarqué que le dataset possèdait un sous [dataset](https://www.kaggle.com/datasets/thomasdubail/brain-tumors-256x256) contenant 3096 images d'IRM, de tailles 256x256. Nous avons adapté le dataset afin de réduire encore la taille des images et simplifier l’entraînement. Toutes les images ont été redimensionnées à 128x128 pixels, et bien qu’elles possèdent initialement 3 canaux de couleurs (rouge, vert, bleu), nous avons conservé uniquement les niveaux de gris. Cela permet de réduire la taille des données en entrée, tout en préservant l’essentiel des informations nécessaires pour l’analyse des images. 
+Pour le MLP, étant un réseau de neurones prenant en entrée la taille des données utilisé, il fallait un dataset un peu plus simple que le dataset choisit. Nous avons remarqué que le dataset possédait un sous [dataset](https://www.kaggle.com/datasets/thomasdubail/brain-tumors-256x256) contenant 3096 images d'IRM, de tailles 256x256. Nous avons adapté le dataset afin de réduire encore la taille des images et simplifier l’entraînement. Toutes les images ont été redimensionnées à 128x128 pixels, et bien qu’elles possèdent initialement 3 canaux de couleurs (rouge, vert, bleu), nous avons conservé uniquement les niveaux de gris. Cela permet de réduire la taille des données en entrée, tout en préservant l’essentiel des informations nécessaires pour l’analyse des images. 
 
 Ainsi, chaque image redimensionnée est convertie en un vecteur plat de taille 128×128=16384 (au lieu de 3x256x256=131072), correspondant à la taille de la couche d’entrée du réseau.
 
@@ -122,16 +122,16 @@ Pour améliorer ce modèle, plusieurs pistes sont envisageables :
 
 ### Dataset
 
-Pour le CNN, on a voulu utiliser le dataset en entier. Comme dit précédemment, le dataset possède des images de tailles variées et pas forcément carré, chacune est caractérisé par la présence ou non d'une tumeur (classification en "*Tumor*" et "*Healthy*").
-Dans un réseau convolutif, on a besoin d'avoir des entrées de taille fixe. On commence donc à redimensionner les images en (128 x 128) pixels. On a choisi cette taille car elle permet de garder assez d'informations pour la détection, tout en limitant le nombre de paramètre du modèle.
+Pour le CNN, nous avons voulu utiliser le dataset en entier. Comme dit précédemment, le dataset possède des images de tailles variées et pas forcément carré, chacune est caractérisé par la présence ou non d'une tumeur (classification en "*Tumor*" et "*Healthy*").
+Dans un réseau convolutif, nous avons besoin d'avoir des entrées de taille fixe. On commence donc à redimensionner les images en (128 x 128) pixels. Nous avons choisi cette taille car elle permet de garder assez d'informations pour la détection, tout en limitant le nombre de paramètre du modèle.
 On garde les 3 canaux rgb, car l'impact sur le nombre de paramètre du modèle est moindre (contrairement au MLP) et après avoir entraînement, la précision du modèle est légèrement meilleure en gardant les images en couleurs.
-Pour l'entraînement, on a divisé les images en dataset d'entraînement (training) et de validation (validation) avec une séparation de 70% / 30%. Nous avons mélangé les images avant de les mettre en batch afin de limiter l'overfitting (plus particulièrement pour le modèle commun IRM et CT Scan).
+Pour l'entraînement, nous avons divisé les images en dataset d'entraînement (training) et de validation (validation) avec une séparation de 70% / 30%. Nous avons mélangé les images avant de les mettre en batch afin de limiter l'overfitting (plus particulièrement pour le modèle commun IRM et CT Scan).
 
 
 ### Modèle
 
 Le modèle a été conçu avec *Keras*. Il contient les couches suivantes:
-- Un Rescaling, il permet de modifié l'input pour avoir des valeurs d'entrées du réseau sur [0, 1], ca permet d'améliorer la stabilité et la vitesse d'apprentissage du modèle.
+- Un Rescaling, il permet de modifié l'input pour avoir des valeurs d'entrées du réseau sur [0, 1], ça permet d'améliorer la stabilité et la vitesse d'apprentissage du modèle.
 - Une première couche de convolution avec un filtre de taille (5, 5), un filtre (5, 5) permet de détecter des motifs de tailles moyenne dès la première étape.
 - Ensuite, on a 3 couches convolutives avec des filtres (3, 3), propage les motifs de l'image au fur des convolutions.
 - Après chacune des 4 couches convolutives, on a une couche de Pooling (2, 2) qui permet de réduire la dimension ainsi qu'agrégé les informations.
@@ -191,7 +191,7 @@ Pour entraîner ce modèle, nous avons suivi les étapes suivantes:
    - Sauvegarde de la meilleure configuration (par rapport à la validation loss) du modèle pendant l'entraînement et chargement à la fin des 10 époques (utile en cas d'overfitting).
 
 3. **Entraînement des modèles**
-   - Comme on a décidé de diviser le datasets en 3, on va entraîner 3 modèles pour voir si un type d'imagerie est mieux que l'autre pour la reconnaissance de tumeur et si ces 2 types peuvent être évaluer par le même modèle (en utilisant la même forme de modèle mais pour obtenir des paramètres différents).
+   - Comme nous avons décidé de diviser le datasets en 3, nous allons entraîner 3 modèles pour voir si un type d'imagerie est mieux que l'autre pour la reconnaissance de tumeur et si ces 2 types peuvent être évaluer par le même modèle (en utilisant la même forme de modèle mais pour obtenir des paramètres différents).
 
 Les courbes de coût (loss) et de précision (accuracy) pour les trois modèles (CT, IRM et Commun) entraînés sur 10 époques.
 
@@ -203,7 +203,7 @@ Les courbes de coût (loss) et de précision (accuracy) pour les trois modèles 
 
 ### Résultats obtenus
 
-Après l'entraînement sur 10 époques, on voit que nos modèles (avec la même architecture) possède une précision très proche et élevé, avec le modèle des IRMs légèrement plus performant que les 2 autres.
+Après l'entraînement sur 10 époques, on voit que nos modèles (avec la même architecture) possèdent une précision élevé et très proche les unes aux autres, avec le modèle des IRMs légèrement plus performant que les 2 autres.
 
 | Modèle        | Dataset de validation utilisé | Loss   | Accuracy |
 |---------------|-------------------------------|--------|----------|
@@ -227,13 +227,13 @@ Après l'entraînement sur 10 époques, on voit que nos modèles (avec la même 
 
 ### Améliorations possibles
 
-On pourrait utiliser des méthodes pour améliorer le modèle CNN actuel, par exemple:
+Nous pourrions utiliser des méthodes pour améliorer le modèle CNN actuel, par exemple:
 - Comme pour le MLP, **l'augmentation de données**, que ce soit par l'augmentation du nombre d'images ou par le biais de transformation sur les données existantes, serait possible et permetterait d'améliorer la robustesse et de limiter l'effet d'overfitting.
 - **L'optimisation des hyperparamètres** pourrait être une option, bien qu'on ai essayé plusieurs types de couches et taille de filtres, il existe certainement un modèle légèrement plus performant.
 - Entraînement sur un **nombre d'époques plus élevé** : Prolonger la durée de l’entraînement pourrait permettre au modèle de converger davantage et potentiellement d'améliorer sa précision.
 
-- On pourrait utiliser d'autres approches, par exemple en **changeant l'architecture** du modèle en passant d'une structure de CNN vers un transformers.
-- Une autre amélioration qui n'est cette fois-ci pas en lien avec la précision, serait de donner la zone dans laquelle la tumeur se trouve (si elle existe), ca pourrait être une zone rectangulaire ou bien une heatmap avec des couleurs plus vive au centre de la tumeur, ca permetterait au modèle d'être utilisé par des humains, notamment pour aider à faire des diagnostics.
+- Nous pourrions utiliser d'autres approches, par exemple en **changeant l'architecture** du modèle en passant d'une structure de CNN vers un transformers.
+- Une autre amélioration qui n'est cette fois-ci pas en lien avec la précision, serait de donner la zone dans où la tumeur se trouve (si elle existe), ça pourrait être une zone rectangulaire ou bien une heatmap avec des couleurs plus vive au centre de la tumeur, ça permetterait au modèle d'être utilisé par des humains, notamment pour aider à faire des diagnostics.
 
 
 
@@ -243,6 +243,6 @@ Dans le cadre de ce projet, l’objectif était de déterminer si un réseau de 
 
 **Pour le MLP**, malgré la mise en place d'un réseau avec 4 couches, le modèle n’a atteint qu'une précision de 59,13% après 10 époques d’entraînement. Cette précision relativement faible peut s’expliquer par la nature du MLP qui, bien qu’efficace pour certaines tâches, n’est pas particulièrement adapté aux données d’image complexes, comme celles utilisées dans ce projet. 
 
-**Pour le CNN**, qui est spécifiquement conçu pour les tâches de traitement d'images, les résultats parle d'eux mêmes. En utilisant des images de scanner CT, on a atteint une précision de 96,2%. Lors de l’utilisation d'images d’IRM, la précision a augmenté à 98,3%. Enfin, en combinant les images de CT et IRM on a une précision de 96,9%.
+**Pour le CNN**, qui est spécifiquement conçu pour les tâches de traitement d'images, les résultats parle d'eux mêmes. En utilisant des images de scanner CT, nous avons atteint une précision de 96,2%. Lors de l’utilisation d'images d’IRM, la précision a augmenté à 98,3%. Enfin, en combinant les images de CT et IRM nous avons une précision de 96,9%.
 
 En conclusion, il est effectivement possible d’obtenir un modèle avec un taux de précision élevé, proche de 100%, en utilisant des architectures adaptées comme les CNN. Le MLP, en revanche, n’a pas donné des résultats suffisamment bons dans ce contexte, ce qui montre qu’il n’est pas toujours le meilleur choix pour des tâches de classification sur des données d’images complexes.
